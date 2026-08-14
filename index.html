@@ -580,7 +580,7 @@
       <div class="file-icon">.md</div>
       <div class="file-meta">
         <strong>INTERACTIVO (Transformador).md</strong>
-        <span>Markdown · 9 KB</span>
+        <span>Markdown · 10 KB</span>
       </div>
       <button class="copy-btn" id="skillDownloadBtn" type="button">Descargar</button>
     </div>
@@ -950,7 +950,8 @@ Decide deliberately, and let the answers from Step 2 justify each choice:
 - **Density and rhythm.** Whitespace, section breaks, line length. Long reference
   material needs strong visual segmentation; a short guide can breathe.
 - **Structure.** Where does the eye land first, how does the reader move down the page,
-  how do they know where they are.
+  how do they know where they are. Answer this twice — once for a phone, once for a
+  laptop — because the two screens deserve different layouts.
 
 Avoid the default look — unstyled system blue, uniform gray boxes, everything centered.
 That reads as unfinished. Equally, avoid decoration that fights the content. The design
@@ -993,10 +994,17 @@ Hard constraints:
 - **One file.** All CSS in a `<style>` block, all JS in a `<script>` block, all images
   base64-inlined. No CDN, no external fonts, no fetch calls. It must work opened by
   double-click with the Wi-Fi off.
-- **Mobile-first.** Design for a narrow screen first, then let it widen. Single column.
-  Inputs at `font-size: 16px` minimum, or iOS zooms the page on focus. Tap targets at
-  least 44px. Never rely on hover to reveal anything — there is no hover on a phone.
-  Include `<meta name="viewport" content="width=device-width, initial-scale=1">`.
+- **Responsive: two real designs, not one stretched.** Start mobile-first: a single
+  column on narrow screens, inputs at `font-size: 16px` minimum (or iOS zooms the page
+  on focus), tap targets at least 44px, and never rely on hover to reveal anything —
+  there is no hover on a phone. Include
+  `<meta name="viewport" content="width=device-width, initial-scale=1">`.
+  Then design the desktop view as its own layout behind a `min-width` media query
+  (around 1000px). A phone column centered in whitespace reads as unfinished on a
+  laptop. Use the extra width deliberately: a larger hero, card lists becoming
+  multi-column grids, and — for long guides — a sticky side navigation that highlights
+  the current section. The test: opened full screen on a laptop, the page should look
+  designed for that screen, never like a phone mockup floating in the middle.
 - **State lives in memory.** Interactivity must work with plain JavaScript variables and
   the DOM. If you want to persist anything, wrap `localStorage` in a `try/catch` and
   make sure everything still works when it fails — it behaves inconsistently on
@@ -1017,6 +1025,10 @@ Before telling the user you are done, check the output mechanically:
 - Confirm the file is named `index.html` and sits in the project root.
 - Re-read the interactive JavaScript once for obvious errors: unclosed handlers,
   references to element IDs that do not exist.
+- Confirm the desktop layout exists: the CSS must contain at least one `min-width`
+  media query that meaningfully changes the layout on wide screens. If a wide window
+  only stretches the margins around a phone-width column, the desktop design is
+  missing — go back and build it.
 
 Then report to the user, in their language and in a few lines: which design direction
 you chose and why it fits their audience, which interactive sections you added and what
