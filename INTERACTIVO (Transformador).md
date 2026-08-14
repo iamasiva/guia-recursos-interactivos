@@ -100,24 +100,46 @@ uninvited is the worse failure of the two.
 
 ## Step 3 — Choose a design direction
 
-There is no house template here. Thousands of directions are viable; your job is to
-narrow them using the four variables above and commit to one. A resource for teenagers
-learning to invest and a compliance checklist for accountants should not come out
-looking like siblings.
+Every resource follows the same house structure, but wears its own skin. The structure
+below is fixed; the palette, the type pairing, and the mood are chosen fresh for each
+document, driven by the four variables from Step 2. Two guides on different topics
+should feel like siblings, never like twins.
 
-Decide deliberately, and let the answers from Step 2 justify each choice:
+**The fixed structure:**
 
-- **Typography.** Pick a system font stack, since no external fonts can load. Vary
-  weight, size, and letter-spacing to build hierarchy. Generous type sizes for a general
-  audience; tighter and denser for professionals who scan.
-- **Palette.** Choose a small, intentional set — a background, a text color, one accent,
-  and a couple of neutrals. Motivate it by niche and mood. Check contrast; light gray on
-  white is unreadable in sunlight, which is where phones get used.
+- A full-bleed hero: a short uppercase eyebrow line with wide letter-spacing, then a
+  big display-font headline with exactly one span colored in the accent, then a
+  one-line subtitle in the muted color. Give the hero depth with a subtle radial glow
+  or gradient in the theme color — never a flat solid block.
+- Full-width sections separated by thin borders. Each section opens with a small
+  uppercase section label in the accent color (11px, letter-spaced), then an `h2` in
+  the display font.
+- Section content centered in a container of roughly 820px, so a laptop reads as a
+  designed page and a phone gets a comfortable single column.
+- A footer that signs the resource: the title in the display font, then the author's
+  brand line.
+
+**What you choose per document:**
+
+- **Type pairing.** One display font for headlines, with personality matched to the
+  niche (an elegant serif for finance, a rounded sans for a playful topic, a
+  monospace-adjacent grotesk for developer tooling), plus one workhorse sans for body
+  text — Inter is the house default. Load both from Google Fonts, always with system
+  fallbacks in the stack.
+- **Palette.** The house leans dark and rich: a near-black background tinted with the
+  theme color, warm light text, one vivid accent plus a gold or amber secondary for
+  numbers and highlights. A light palette is allowed when the niche clearly calls for
+  it. Either way: a small intentional set, and check contrast — these pages get read
+  on phones in sunlight.
 - **Density and rhythm.** Whitespace, section breaks, line length. Long reference
   material needs strong visual segmentation; a short guide can breathe.
-- **Structure.** Where does the eye land first, how does the reader move down the page,
-  how do they know where they are. Answer this twice — once for a phone, once for a
-  laptop — because the two screens deserve different layouts.
+- **Component vocabulary.** Build the page from the house kit, styled to the
+  document's skin: numbered step circles with a thin accent border; stat cards in a
+  grid for headline numbers; prompt boxes with an uppercase label and a copy button;
+  template boxes whose inputs fill `{{PLACEHOLDERS}}` into the assembled text live;
+  notes in tip / danger / info variants; resource cards with small pill badges;
+  bordered tables inside a horizontal-scroll wrapper; pill-shaped tab buttons for
+  alternatives. Use only the pieces the content needs.
 
 Avoid the default look — unstyled system blue, uniform gray boxes, everything centered.
 That reads as unfinished. Equally, avoid decoration that fights the content. The design
@@ -158,8 +180,10 @@ Pages without any further setup.
 Hard constraints:
 
 - **One file.** All CSS in a `<style>` block, all JS in a `<script>` block, all images
-  base64-inlined. No CDN, no external fonts, no fetch calls. It must work opened by
-  double-click with the Wi-Fi off.
+  base64-inlined. The single permitted external dependency is the Google Fonts `<link>`
+  for the chosen type pairing — and every `font-family` must carry system fallbacks, so
+  the page still reads fine opened by double-click with the Wi-Fi off. No other CDN, no
+  fetch calls.
 - **Responsive: two real designs, not one stretched.** Start mobile-first: a single
   column on narrow screens, inputs at `font-size: 16px` minimum (or iOS zooms the page
   on focus), tap targets at least 44px, and never rely on hover to reveal anything —
@@ -176,6 +200,9 @@ Hard constraints:
   make sure everything still works when it fails — it behaves inconsistently on
   `file://`.
 - **No frameworks.** Vanilla JS. For charts, draw SVG or use Canvas directly.
+- **Printable.** Include a light `@media print` block: white background, dark text,
+  copy buttons and interactive-only controls hidden, no page breaks inside cards or
+  steps. Readers export these guides to PDF.
 - Set `<html lang="...">` to the document's language, give the page a real `<title>`,
   and use semantic headings in order.
 
@@ -186,7 +213,8 @@ Hard constraints:
 Before telling the user you are done, check the output mechanically:
 
 - Search the HTML for `http://`, `https://`, `<link`, `@import` and `cdn`. Any hit that
-  is not a real hyperlink meant for the reader is a broken dependency — inline it.
+  is not a real hyperlink meant for the reader, or the Google Fonts links, is a broken
+  dependency — inline it.
 - Confirm every image from the document made it in as base64.
 - Confirm the file is named `index.html` and sits in the project root.
 - Re-read the interactive JavaScript once for obvious errors: unclosed handlers,
