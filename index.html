@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cómo crear tus propios recursos interactivos — Guía de la skill INTERACTIVO</title>
+<style>
+  :root {
+    --paper: #FBF8F2;
+    --ink: #221E33;
+    --muted: #655F7A;
+    --accent: #6D28D9;
+    --accent-soft: #F0E9FC;
+    --amber: #F59E0B;
+    --card: #FFFFFF;
+    --border: #E8E1D5;
+    --dark: #241F38;
+    --dark-text: #EFEAFB;
+    --ok: #1B8A5A;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 17px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 680px; margin: 0 auto; padding: 0 20px 80px; }
+
+  /* ---------- Hero ---------- */
+  header.hero { padding: 48px 0 8px; }
+  .chip {
+    display: inline-block;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 999px;
+    margin-bottom: 20px;
+  }
+  h1 {
+    font-size: clamp(30px, 7vw, 42px);
+    line-height: 1.12;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
+  }
+  .subtitle {
+    font-size: 18px;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: 24px;
+  }
+  .intro p { margin-bottom: 16px; }
+
+  /* ---------- Sections ---------- */
+  section { margin-top: 56px; }
+  h2 {
+    font-size: clamp(23px, 5.5vw, 28px);
+    font-weight: 800;
+    letter-spacing: -0.015em;
+    line-height: 1.2;
+    margin-bottom: 18px;
+    padding-top: 18px;
+    border-top: 3px solid var(--ink);
+  }
+  h3 { font-size: 19px; font-weight: 750; margin-bottom: 8px; letter-spacing: -0.01em; }
+  section p { margin-bottom: 14px; }
+
+  /* ---------- Requirements list ---------- */
+  ul.req { list-style: none; }
+  ul.req li {
+    position: relative;
+    padding: 10px 0 10px 36px;
+    border-bottom: 1px solid var(--border);
+  }
+  ul.req li:last-child { border-bottom: none; }
+  ul.req li::before {
+    content: "";
+    position: absolute;
+    left: 4px; top: 18px;
+    width: 10px; height: 10px;
+    border-radius: 3px;
+    background: var(--accent);
+    transform: rotate(45deg);
+  }
+
+  /* ---------- Steps ---------- */
+  .progress-line {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 22px;
+  }
+  .progress-track {
+    flex: 1;
+    height: 8px;
+    background: var(--border);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--accent), var(--amber));
+    border-radius: 999px;
+    transition: width .35s ease;
+  }
+  .progress-label { font-size: 14px; font-weight: 700; color: var(--muted); white-space: nowrap; }
+
+  .step {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 22px 20px;
+    margin-bottom: 18px;
+    box-shadow: 0 1px 3px rgba(34,30,51,0.05);
+  }
+  .step.done { border-color: var(--accent); }
+  .step-head { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 10px; }
+  .step-num {
+    flex: 0 0 auto;
+    width: 38px; height: 38px;
+    border-radius: 12px;
+    background: var(--amber);
+    color: #fff;
+    font-weight: 800;
+    font-size: 18px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .step.done .step-num { background: var(--ok); }
+  .step h3 { padding-top: 5px; }
+  .step-check {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 16px;
+    min-height: 44px;
+    padding: 0 4px;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .step-check input { position: absolute; opacity: 0; }
+  .step-check .box {
+    flex: 0 0 auto;
+    width: 24px; height: 24px;
+    border: 2px solid var(--muted);
+    border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all .15s ease;
+  }
+  .step-check .box svg { opacity: 0; }
+  .step-check input:checked ~ .box { background: var(--ok); border-color: var(--ok); }
+  .step-check input:checked ~ .box svg { opacity: 1; }
+  .step-check input:checked ~ .txt { color: var(--ok); }
+
+  /* ---------- Command blocks ---------- */
+  .cmd {
+    background: var(--dark);
+    color: var(--dark-text);
+    border-radius: 14px;
+    padding: 16px;
+    margin: 14px 0;
+  }
+  .cmd code {
+    display: block;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 14.5px;
+    line-height: 1.55;
+    word-break: break-word;
+    white-space: pre-wrap;
+    margin-bottom: 12px;
+  }
+  .cmd code .var { color: var(--amber); font-weight: 700; }
+  .copy-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 0 18px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background .15s ease;
+  }
+  .copy-btn:active { background: #5A1FB8; }
+  .copy-btn.copied { background: var(--ok); }
+  .cmd-input-row { margin: 14px 0 4px; }
+  .cmd-input-row label {
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .cmd-input-row input {
+    width: 100%;
+    min-height: 48px;
+    padding: 10px 14px;
+    font-size: 16px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    color: var(--ink);
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    outline: none;
+  }
+  .cmd-input-row input:focus { border-color: var(--accent); }
+
+  /* ---------- Toggle: recurso vs borrador ---------- */
+  .seg {
+    display: flex;
+    background: var(--border);
+    border-radius: 12px;
+    padding: 4px;
+    margin: 18px 0 14px;
+  }
+  .seg button {
+    flex: 1;
+    min-height: 46px;
+    border: none;
+    background: transparent;
+    border-radius: 9px;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all .15s ease;
+  }
+  .seg button.active { background: var(--card); color: var(--accent); box-shadow: 0 1px 4px rgba(34,30,51,0.12); }
+  .case-panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 14px;
+  }
+  .case-panel .lbl {
+    font-size: 12.5px;
+    font-weight: 800;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 4px;
+  }
+  .case-panel .lbl.second { margin-top: 16px; color: var(--accent); }
+  .case-panel p { margin-bottom: 0; }
+
+  /* ---------- Patterns ---------- */
+  .pattern {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px 18px;
+    margin-bottom: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .pattern .from { color: var(--muted); font-size: 15.5px; }
+  .pattern .from strong, .pattern .to strong { font-weight: 750; }
+  .pattern .arrow { color: var(--amber); font-weight: 800; font-size: 15px; }
+  .pattern .to { font-weight: 600; font-size: 16px; }
+  @media (min-width: 560px) {
+    .pattern { flex-direction: row; align-items: center; gap: 14px; }
+    .pattern .from { flex: 1; }
+    .pattern .to { flex: 1; }
+  }
+  .pattern-head {
+    display: none;
+  }
+  @media (min-width: 560px) {
+    .pattern-head {
+      display: flex;
+      gap: 14px;
+      padding: 0 18px;
+      margin-bottom: 8px;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .pattern-head span { flex: 1; }
+    .pattern-head .mid { flex: 0 0 auto; width: 22px; }
+  }
+
+  /* ---------- Checklist ---------- */
+  .check-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 8px 6px;
+  }
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-height: 52px;
+    padding: 6px 14px;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    border-bottom: 1px solid var(--border);
+  }
+  .check-item:last-child { border-bottom: none; }
+  .check-item input { position: absolute; opacity: 0; }
+  .check-item .box {
+    flex: 0 0 auto;
+    width: 26px; height: 26px;
+    border: 2px solid var(--muted);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all .15s ease;
+  }
+  .check-item .box svg { opacity: 0; }
+  .check-item input:checked ~ .box { background: var(--ok); border-color: var(--ok); }
+  .check-item input:checked ~ .box svg { opacity: 1; }
+  .check-item input:checked ~ .txt { color: var(--muted); text-decoration: line-through; }
+  .check-status {
+    margin-top: 14px;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--muted);
+  }
+  .check-status.all-done { color: var(--ok); }
+
+  /* ---------- Accordion ---------- */
+  .acc {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+  .acc-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 56px;
+    padding: 14px 18px;
+    background: none;
+    border: none;
+    font-family: inherit;
+    font-size: 16.5px;
+    font-weight: 700;
+    color: var(--ink);
+    text-align: left;
+    cursor: pointer;
+  }
+  .acc-btn .ind {
+    flex: 0 0 auto;
+    width: 26px; height: 26px;
+    border-radius: 8px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 18px;
+    font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+    transition: transform .2s ease;
+  }
+  .acc.open .acc-btn .ind { transform: rotate(45deg); }
+  .acc-body { display: none; padding: 0 18px 16px; }
+  .acc.open .acc-body { display: block; }
+  .acc-body p { margin-bottom: 10px; }
+  .acc-body p:last-child { margin-bottom: 0; }
+  .acc-body .cmd { margin-top: 4px; }
+
+  /* ---------- Footer ---------- */
+  footer {
+    margin-top: 72px;
+    padding-top: 28px;
+    border-top: 3px solid var(--ink);
+    text-align: center;
+  }
+  footer .brand {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    margin-bottom: 6px;
+  }
+  footer .brand span { color: var(--accent); }
+  footer p.note { color: var(--muted); font-size: 15.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <span class="chip">IA Masiva</span>
+    <h1>Cómo crear tus propios recursos interactivos</h1>
+    <p class="subtitle">Guía de uso de la skill INTERACTIVO (Transformador)</p>
+    <div class="intro">
+      <p>Esta es la misma skill que usamos en IA Masiva para armar las guías interactivas que regalamos. Tú escribes el contenido en Word como siempre lo has hecho, y la inteligencia artificial se encarga de convertirlo en una página web con diseño propio, botones, campos y acciones dinámicas.</p>
+      <p>No necesitas saber programar, no necesitas instalar librerías y no necesitas pagar hosting. El resultado es un solo archivo que abres en el navegador o publicas con un link para compartir.</p>
+    </div>
+  </header>
+
+  <section id="requisitos">
+    <h2>Lo que necesitas antes de empezar</h2>
+    <ul class="req">
+      <li>Claude Code instalado en tu computador.</li>
+      <li>El archivo <strong>INTERACTIVO (Transformador).md</strong>, que es la skill.</li>
+      <li>Un documento de Word con el contenido de tu recurso.</li>
+      <li>Una cuenta de GitHub, solo si quieres publicarlo y compartir el link.</li>
+    </ul>
+  </section>
+
+  <section id="pasos">
+    <h2>Los cuatro pasos</h2>
+
+    <div class="progress-line">
+      <div class="progress-track"><div class="progress-fill" id="stepFill"></div></div>
+      <span class="progress-label" id="stepLabel">0 de 4</span>
+    </div>
+
+    <div class="step" id="step1">
+      <div class="step-head">
+        <div class="step-num">1</div>
+        <h3>Crea la carpeta y el documento</h3>
+      </div>
+      <p>Crea una carpeta nueva en tu computador. Dentro, guarda el documento de Word con el contenido de tu recurso. Esa carpeta va a ser el proyecto completo, así que mantenla limpia: el Word, la skill y nada más.</p>
+      <label class="step-check">
+        <input type="checkbox" data-step="1">
+        <span class="box"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7.5 5.5 11 12 3" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <span class="txt">Marcar paso como hecho</span>
+      </label>
+    </div>
+
+    <div class="step" id="step2">
+      <div class="step-head">
+        <div class="step-num">2</div>
+        <h3>Pega la skill dentro de la carpeta</h3>
+      </div>
+      <p>Copia el archivo <strong>INTERACTIVO (Transformador).md</strong> y pégalo en esa misma carpeta, al lado de tu Word. No hace falta crear subcarpetas ni cambiarle el nombre.</p>
+      <label class="step-check">
+        <input type="checkbox" data-step="2">
+        <span class="box"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7.5 5.5 11 12 3" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <span class="txt">Marcar paso como hecho</span>
+      </label>
+    </div>
+
+    <div class="step" id="step3">
+      <div class="step-head">
+        <div class="step-num">3</div>
+        <h3>Llama la skill desde Claude Code</h3>
+      </div>
+      <p>Abre Claude Code y selecciona la carpeta que acabas de crear como carpeta del proyecto. Escribe el símbolo de arroba: se despliega la lista de archivos que hay dentro. Selecciona la skill y escribe la instrucción indicando cuál es tu documento.</p>
+      <p>La frase que vas a escribir es esta:</p>
+
+      <div class="cmd-input-row">
+        <label for="docName">Escribe aquí el nombre real de tu archivo y la frase se arma sola:</label>
+        <input type="text" id="docName" placeholder="mi-guia.docx" autocomplete="off" autocapitalize="off" spellcheck="false">
+      </div>
+
+      <div class="cmd">
+        <code id="cmdSkill">@INTERACTIVO (Transformador).md ejecuta esta skill sobre el documento <span class="var" id="cmdDoc">mi-guia.docx</span></code>
+        <button class="copy-btn" data-copy-target="cmdSkill">Copiar frase</button>
+      </div>
+
+      <p>Cambia <strong>mi-guia.docx</strong> por el nombre real de tu archivo. De ahí en adelante la skill trabaja sola: lee tu documento, entiende para quién es y qué busca lograr, elige un diseño, decide qué partes conviene volver interactivas y genera un archivo llamado <strong>index.html</strong>.</p>
+      <label class="step-check">
+        <input type="checkbox" data-step="3">
+        <span class="box"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7.5 5.5 11 12 3" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <span class="txt">Marcar paso como hecho</span>
+      </label>
+    </div>
+
+    <div class="step" id="step4">
+      <div class="step-head">
+        <div class="step-num">4</div>
+        <h3>Publica y comparte</h3>
+      </div>
+      <p>Ya puedes abrir el <strong>index.html</strong> haciendo doble clic. Si quieres un link para compartir, pídeselo a Claude Code en el mismo chat:</p>
+      <div class="cmd">
+        <code id="cmdPublish">sube este proyecto a un repositorio nuevo de GitHub, activa GitHub Pages y pásame el link</code>
+        <button class="copy-btn" data-copy-target="cmdPublish">Copiar frase</button>
+      </div>
+      <p>Listo. Tienes un recurso publicado, con link propio y sin pagar hosting.</p>
+      <label class="step-check">
+        <input type="checkbox" data-step="4">
+        <span class="box"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7.5 5.5 11 12 3" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <span class="txt">Marcar paso como hecho</span>
+      </label>
+    </div>
+  </section>
+
+  <section id="tu-word">
+    <h2>Tu Word: ¿ya es el recurso o es un borrador?</h2>
+    <p>La skill detecta sola en cuál de los dos casos estás, y se comporta distinto. Vale la pena que sepas cuál le estás entregando, porque cambia el resultado.</p>
+
+    <div class="seg" role="tablist">
+      <button id="segA" class="active" type="button">Un recurso terminado</button>
+      <button id="segB" type="button">Un borrador o brief</button>
+    </div>
+
+    <div class="case-panel" id="panelA">
+      <div class="lbl">Se ve así</div>
+      <p>Textos pulidos, secciones completas, tiene inicio y cierre</p>
+      <div class="lbl second">La skill hace esto</div>
+      <p>Respeta tus textos tal cual y solo los lleva al diseño</p>
+    </div>
+
+    <div class="case-panel" id="panelB" hidden>
+      <div class="lbl">Se ve así</div>
+      <p>Notas sueltas, viñetas, ideas sin desarrollar, instrucciones</p>
+      <div class="lbl second">La skill hace esto</div>
+      <p>Redacta el recurso completo a partir de tu intención</p>
+    </div>
+
+    <p>Si tienes dudas, entrégale el recurso terminado. Ante señales mezcladas la skill respeta lo que escribiste en lugar de reescribirlo.</p>
+  </section>
+
+  <section id="interactividad">
+    <h2>Qué interactividad puede aparecer</h2>
+    <p>No hay una regla fija. La skill lee tu contenido y decide qué aporta de verdad. Estos son algunos de los patrones que suele encontrar:</p>
+
+    <div class="pattern-head"><span>Si tu contenido tiene…</span><span class="mid"></span><span>Puede convertirse en…</span></div>
+
+    <div class="pattern"><span class="from">Una tabla que el lector debe llenar</span><span class="arrow">→</span><span class="to">Campos editables con totales que se calculan solos</span></div>
+    <div class="pattern"><span class="from">Números que dependen de cada persona</span><span class="arrow">→</span><span class="to">Una calculadora o una gráfica que cambia en vivo</span></div>
+    <div class="pattern"><span class="from">Prompts, plantillas o mensajes para reutilizar</span><span class="arrow">→</span><span class="to">Botones de copiar en un clic</span></div>
+    <div class="pattern"><span class="from">Un texto con espacios en blanco</span><span class="arrow">→</span><span class="to">Campos que arman el texto final listo para copiar</span></div>
+    <div class="pattern"><span class="from">Un proceso por pasos</span><span class="arrow">→</span><span class="to">Un checklist con progreso visible</span></div>
+    <div class="pattern"><span class="from">Listas largas o comparaciones</span><span class="arrow">→</span><span class="to">Filtros o secciones desplegables</span></div>
+
+    <p>Si tu documento es puro texto narrativo y no hay nada que manipular, la skill no inventa botones por inventarlos. Te entrega una lectura limpia y bien diseñada, que también es un buen resultado.</p>
+  </section>
+
+  <section id="revision">
+    <h2>Revisa esto antes de compartir</h2>
+    <div class="check-card">
+      <label class="check-item">
+        <input type="checkbox" data-check="0">
+        <span class="box"><svg width="15" height="15" viewBox="0 0 14 14"><path d="M2 7.5 5.5 11 12 3" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <span class="txt">Abriste el index.html y se ve bien en el computador.</span>
+      </label>
+      <label class="check-item">
+        <input type="checkbox" data-check="1">
+        <span class="box"><svg width="15" height="15" viewBox="0 0 14 14"><path d="M2 7.5 5.5 11 12 3" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <span class="txt">Lo abriste también desde el celular, que es donde más lo van a leer.</span>
+      </label>
+      <label class="check-item">
+        <input type="checkbox" data-check="2">
+        <span class="box"><svg width="15" height="15" viewBox="0 0 14 14"><path d="M2 7.5 5.5 11 12 3" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <span class="txt">Probaste cada botón y cada campo interactivo.</span>
+      </label>
+      <label class="check-item">
+        <input type="checkbox" data-check="3">
+        <span class="box"><svg width="15" height="15" viewBox="0 0 14 14"><path d="M2 7.5 5.5 11 12 3" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <span class="txt">Los textos quedaron en el idioma correcto.</span>
+      </label>
+      <label class="check-item">
+        <input type="checkbox" data-check="4">
+        <span class="box"><svg width="15" height="15" viewBox="0 0 14 14"><path d="M2 7.5 5.5 11 12 3" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <span class="txt">Las imágenes de tu Word aparecen dentro del recurso.</span>
+      </label>
+      <label class="check-item">
+        <input type="checkbox" data-check="5">
+        <span class="box"><svg width="15" height="15" viewBox="0 0 14 14"><path d="M2 7.5 5.5 11 12 3" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <span class="txt">El archivo no quedó demasiado pesado.</span>
+      </label>
+    </div>
+    <p class="check-status" id="checkStatus">0 de 6 revisados</p>
+  </section>
+
+  <section id="problemas">
+    <h2>Problemas comunes</h2>
+
+    <div class="acc">
+      <button class="acc-btn" type="button" aria-expanded="false">
+        No me aparece la skill al escribir la arroba
+        <span class="ind">+</span>
+      </button>
+      <div class="acc-body">
+        <p>Revisa que el archivo .md esté dentro de la carpeta que seleccionaste como proyecto en Claude Code. Si lo pegaste después de abrir la sesión, vuelve a escribir la arroba para que refresque la lista.</p>
+      </div>
+    </div>
+
+    <div class="acc">
+      <button class="acc-btn" type="button" aria-expanded="false">
+        El diseño no me gustó
+        <span class="ind">+</span>
+      </button>
+      <div class="acc-body">
+        <p>No necesitas volver a llamar la skill. Sigue en el mismo chat y pide el cambio con tus palabras: colores más sobrios, tipografía más grande, otro orden de secciones. Claude Code edita el index.html directamente.</p>
+      </div>
+    </div>
+
+    <div class="acc">
+      <button class="acc-btn" type="button" aria-expanded="false">
+        El archivo pesa demasiado
+        <span class="ind">+</span>
+      </button>
+      <div class="acc-body">
+        <p>Las imágenes van incrustadas dentro del HTML para que todo quede en un solo archivo. Si tu Word traía fotos pesadas, redúcelas antes de generar el recurso o pídele a Claude Code que las comprima.</p>
+      </div>
+    </div>
+
+    <div class="acc">
+      <button class="acc-btn" type="button" aria-expanded="false">
+        Quiero usarlo en mi propio dominio
+        <span class="ind">+</span>
+      </button>
+      <div class="acc-body">
+        <p>Se puede. El index.html es un archivo estático común y corriente, así que funciona en cualquier hosting o dominio propio, no solo en GitHub Pages.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p class="brand">Hecho con <span>IA Masiva</span></p>
+    <p class="note">Este mismo documento fue el que usamos para generar la guía interactiva del video.</p>
+  </footer>
+
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ---- Almacenamiento seguro (localStorage puede fallar en file://) ---- */
+  function safeGet(key) {
+    try { return window.localStorage.getItem(key); } catch (e) { return null; }
+  }
+  function safeSet(key, value) {
+    try { window.localStorage.setItem(key, value); } catch (e) { /* sin persistencia */ }
+  }
+
+  /* ---- Copiar al portapapeles con respaldo para file:// ---- */
+  function copyText(text, btn) {
+    function feedback() {
+      var original = btn.textContent;
+      btn.textContent = 'Copiado ✓';
+      btn.classList.add('copied');
+      setTimeout(function () {
+        btn.textContent = original;
+        btn.classList.remove('copied');
+      }, 1600);
+    }
+    function fallback() {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); feedback(); } catch (e) { /* nada */ }
+      document.body.removeChild(ta);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(feedback, fallback);
+    } else {
+      fallback();
+    }
+  }
+
+  var copyButtons = document.querySelectorAll('.copy-btn');
+  for (var i = 0; i < copyButtons.length; i++) {
+    (function (btn) {
+      btn.addEventListener('click', function () {
+        var target = document.getElementById(btn.getAttribute('data-copy-target'));
+        if (target) copyText(target.textContent, btn);
+      });
+    })(copyButtons[i]);
+  }
+
+  /* ---- Armador de la frase con el nombre del archivo ---- */
+  var docInput = document.getElementById('docName');
+  var cmdDoc = document.getElementById('cmdDoc');
+  docInput.addEventListener('input', function () {
+    var name = docInput.value.trim();
+    cmdDoc.textContent = name === '' ? 'mi-guia.docx' : name;
+  });
+
+  /* ---- Progreso de los cuatro pasos ---- */
+  var stepBoxes = document.querySelectorAll('input[data-step]');
+  var stepFill = document.getElementById('stepFill');
+  var stepLabel = document.getElementById('stepLabel');
+
+  function updateSteps() {
+    var done = 0;
+    for (var j = 0; j < stepBoxes.length; j++) {
+      var box = stepBoxes[j];
+      var card = document.getElementById('step' + box.getAttribute('data-step'));
+      if (box.checked) { done++; card.classList.add('done'); }
+      else { card.classList.remove('done'); }
+    }
+    stepFill.style.width = (done / stepBoxes.length * 100) + '%';
+    stepLabel.textContent = done + ' de ' + stepBoxes.length;
+    var state = [];
+    for (var k = 0; k < stepBoxes.length; k++) state.push(stepBoxes[k].checked ? '1' : '0');
+    safeSet('interactivo_pasos', state.join(''));
+  }
+
+  var savedSteps = safeGet('interactivo_pasos');
+  if (savedSteps) {
+    for (var s = 0; s < stepBoxes.length; s++) {
+      if (savedSteps.charAt(s) === '1') stepBoxes[s].checked = true;
+    }
+  }
+  for (var b = 0; b < stepBoxes.length; b++) {
+    stepBoxes[b].addEventListener('change', updateSteps);
+  }
+  updateSteps();
+
+  /* ---- Toggle recurso terminado / borrador ---- */
+  var segA = document.getElementById('segA');
+  var segB = document.getElementById('segB');
+  var panelA = document.getElementById('panelA');
+  var panelB = document.getElementById('panelB');
+  segA.addEventListener('click', function () {
+    segA.classList.add('active'); segB.classList.remove('active');
+    panelA.hidden = false; panelB.hidden = true;
+  });
+  segB.addEventListener('click', function () {
+    segB.classList.add('active'); segA.classList.remove('active');
+    panelB.hidden = false; panelA.hidden = true;
+  });
+
+  /* ---- Checklist final ---- */
+  var checkBoxes = document.querySelectorAll('input[data-check]');
+  var checkStatus = document.getElementById('checkStatus');
+
+  function updateChecks() {
+    var done = 0;
+    for (var j = 0; j < checkBoxes.length; j++) {
+      if (checkBoxes[j].checked) done++;
+    }
+    if (done === checkBoxes.length) {
+      checkStatus.textContent = 'Todo revisado. Listo para compartir ✦';
+      checkStatus.classList.add('all-done');
+    } else {
+      checkStatus.textContent = done + ' de ' + checkBoxes.length + ' revisados';
+      checkStatus.classList.remove('all-done');
+    }
+    var state = [];
+    for (var k = 0; k < checkBoxes.length; k++) state.push(checkBoxes[k].checked ? '1' : '0');
+    safeSet('interactivo_checklist', state.join(''));
+  }
+
+  var savedChecks = safeGet('interactivo_checklist');
+  if (savedChecks) {
+    for (var c = 0; c < checkBoxes.length; c++) {
+      if (savedChecks.charAt(c) === '1') checkBoxes[c].checked = true;
+    }
+  }
+  for (var d = 0; d < checkBoxes.length; d++) {
+    checkBoxes[d].addEventListener('change', updateChecks);
+  }
+  updateChecks();
+
+  /* ---- Acordeones de problemas comunes ---- */
+  var accButtons = document.querySelectorAll('.acc-btn');
+  for (var a = 0; a < accButtons.length; a++) {
+    (function (btn) {
+      btn.addEventListener('click', function () {
+        var card = btn.parentElement;
+        var open = card.classList.toggle('open');
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+    })(accButtons[a]);
+  }
+})();
+</script>
+</body>
+</html>
