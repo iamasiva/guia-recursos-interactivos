@@ -20,6 +20,7 @@
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   [hidden] { display: none !important; }
+  a { color: var(--accent); font-weight: 650; text-underline-offset: 2px; }
   html { scroll-behavior: smooth; }
   body {
     background: var(--paper);
@@ -571,12 +572,37 @@
         <button class="copy-btn" data-copy-target="cmdPublish">Copiar frase</button>
       </div>
       <p>Listo. Tienes un recurso publicado, con link propio y sin pagar hosting.</p>
+      <div class="nota">Si es tu primera vez publicando, Claude Code necesita poder entrar a tu cuenta de GitHub. Cómo conectarla está en la sección <a href="#github">Conecta Claude Code con GitHub</a>, aquí abajo.</div>
       <label class="step-check">
         <input type="checkbox" data-step="4">
         <span class="box"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7.5 5.5 11 12 3" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
         <span class="txt">Marcar paso como hecho</span>
       </label>
     </div>
+  </section>
+
+  <section id="github">
+    <h2>Conecta Claude Code con GitHub</h2>
+    <p>Para el paso 4 Claude Code necesita permiso para entrar a tu cuenta de GitHub. Esto se configura una sola vez por computador y queda listo para todos tus recursos futuros.</p>
+
+    <ol class="armar">
+      <li>Si no tienes cuenta de GitHub, créala gratis en <a href="https://github.com/signup" target="_blank" rel="noopener">github.com/signup</a>. Solo necesitas un correo, y con el plan gratuito alcanza de sobra.</li>
+      <li>Pídele a Claude Code que instale GitHub CLI, la herramienta oficial con la que él se comunica con GitHub. Esta frase sí funciona copiada y pegada:
+        <div class="cmd">
+          <code id="cmdGhInstall">instala GitHub CLI en este computador y confirma que quedó funcionando</code>
+          <button class="copy-btn" data-copy-target="cmdGhInstall">Copiar frase</button>
+        </div>
+      </li>
+      <li>Ahora pídele que conecte tu cuenta:
+        <div class="cmd">
+          <code id="cmdGhAuth">conecta este computador con mi cuenta de GitHub y guíame paso a paso</code>
+          <button class="copy-btn" data-copy-target="cmdGhAuth">Copiar frase</button>
+        </div>
+        Te va a mostrar un código de un solo uso y te va a llevar a github.com en el navegador: pega el código, autoriza con tu cuenta y vuelve al chat.
+      </li>
+    </ol>
+
+    <div class="nota">Esto se hace una sola vez. De ahí en adelante puedes pedirle a Claude Code, con tus palabras, que cree repositorios, publique tus recursos y te pase el link.</div>
   </section>
 
   <section id="tu-word">
